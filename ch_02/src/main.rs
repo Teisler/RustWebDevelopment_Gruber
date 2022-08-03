@@ -4,11 +4,11 @@ use std::io::{Error, ErrorKind};
 use warp::Filter;
 
 #[derive(Debug)]
-struct Question {
-    id: QuestionId,
-    title: String,
-    content: String,
-    tags: Option<Vec<String>>,
+pub struct Question {
+    pub id: QuestionId,
+    pub title: String,
+    pub content: String,
+    pub tags: Option<Vec<String>>,
 }
 
 #[derive(Debug)]
