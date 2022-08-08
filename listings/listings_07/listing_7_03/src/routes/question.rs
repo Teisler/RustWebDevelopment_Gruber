@@ -1,7 +1,10 @@
 use handle_errors::Error;
 use std::collections::HashMap;
 use warp::{http::StatusCode, Rejection, Reply};
-use tracing::instrument;
+use tracing::{
+    info,
+    instrument,
+};
 
 use crate::{
     store::Store,
@@ -33,7 +36,7 @@ pub async fn get_questions(
         let res = &res[pagination.start..pagination.end];
         Ok(warp::reply::json(&res))
     } else {
-        Info!(pagination = false);
+        info!(pagination = false);
         let res: Vec<Question> = store.questions.read().values().cloned().collect();
         Ok(warp::reply::json(&res))
     }

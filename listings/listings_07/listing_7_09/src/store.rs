@@ -1,6 +1,5 @@
-use parking_lot::RwLock;
 use sqlx::{
-    postres::{PgPoolOptions, PgPool, PgRowl},
+    postgres::{PgPoolOptions, PgPool, PgRow},
     Row,
 };
 
@@ -15,14 +14,14 @@ pub struct Store {
 }
 
 impl Store {
-    pub fn new(db_url: &str) -> Self {
+    pub async fn new(db_url: &str) -> Self {
         let db_pool = match PgPoolOptions::new()
             .max_connections(5)
             .connect(db_url)
             .await {
-            Ok(pool) => pool,
-            Err(e) => panic!("Couldn't establish DB connection!"),
-        };
+                Ok(pool) => pool,
+                Err(e) => panic!("Couldn't establish DB connection!"),
+            };
 
         Store {
             connection: db_pool,

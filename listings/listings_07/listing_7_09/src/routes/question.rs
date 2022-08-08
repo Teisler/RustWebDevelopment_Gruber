@@ -1,7 +1,10 @@
 use handle_errors::Error;
 use std::collections::HashMap;
 use warp::{http::StatusCode, Rejection, Reply};
-use tracing::instrument;
+use tracing::{
+    info,
+    instrument,
+};
 
 use crate::{
     store::Store,
@@ -33,14 +36,14 @@ pub async fn get_questions(
         let res = &res[pagination.start..pagination.end];
         Ok(warp::reply::json(&res))
     } else {
-        Info!(pagination = false);
+        info!(pagination = false);
         let res: Vec<Question> = store.questions.read().values().cloned().collect();
         Ok(warp::reply::json(&res))
     }
 }
 
 pub async fn update_question(
-    id: String,
+    id: i32,
     store: Store,
     question: Question,
 ) -> Result<impl Reply, Rejection> {
@@ -52,7 +55,7 @@ pub async fn update_question(
     Ok(warp::reply::with_status("Question updated", StatusCode::OK))
 }
 
-pub async fn delete_question(id: String, store: Store) -> Result<impl Reply, Rejection> {
+pub async fn delete_question(id: i32, store: Store) -> Result<impl Reply, Rejection> {
     match store.questions.write().remove(&QuestionId(id)) {
         Some(_) => Ok(warp::reply::with_status("Question deleted", StatusCode::OK)),
         None => Err(warp::reject::custom(Error::QuestionNotFound)),
