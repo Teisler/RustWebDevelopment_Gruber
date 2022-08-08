@@ -45,4 +45,22 @@ impl Store {
                 }
             }
     }
+    
+    pub async add_question(&self, new_question: NewQuestion) -> Result<Question, sqlx::Error> {
+        match sqlx::query("INSERT INTO questions (title, content, tags) VALUES ($1, $2, $3) RETURNING id, title, content, tags")
+        .bind(new_question.title)
+        .bind(new_question.content)
+        .bind(new_question.tags)
+        .map(|row: PgRow| Question {
+            id: QuestionId(row.get("id")),
+            title: row.get("title"),
+            content: row.get("content"),
+            tags: row.get("tags),
+        })
+        .fetch_one(&self.connection)
+        .await {
+            Ok(question) => Ok(question),
+            Err(e) => Err(e),
+        }
+    }
 }

@@ -38,11 +38,11 @@ impl Store {
             })
             .fetch_all(&self.connection)
             .await {
-            OK(questions) => Ok(questions),
-            Err(e) => {
-                tracing::event!(tracing::Level::ERROR, "{:?}", e);
-                Err(Error::DatabaseQueryError)
+                OK(questions) => Ok(questions),
+                Err(e) => {
+                    tracing::event!(tracing::Level::ERROR, "{:?}", e);
+                    Err(Error::DatabaseQueryError)
+                }
             }
-        }
     }
 }

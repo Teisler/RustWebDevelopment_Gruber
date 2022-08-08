@@ -29,6 +29,7 @@ impl std::fmt::Display for Error {
         }
     }
 }
+
 impl Reject for Error {}
 
 pub async fn return_error(r: Rejection) -> Result<impl Reply, Rejection> {
