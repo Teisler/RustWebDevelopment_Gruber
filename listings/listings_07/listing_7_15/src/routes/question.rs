@@ -1,7 +1,7 @@
 use handle_errors::Error;
 use std::collections::HashMap;
 use warp::{http::StatusCode, Rejection, Reply};
-use tracing:s:{
+use tracing::{
     info,
     instrument,
 };
@@ -9,7 +9,10 @@ use tracing:s:{
 use crate::{
     store::Store,
     types::{
-        pagination::extract_pagination,
+        pagination::{
+            extract_pagination,
+            Pagination,
+        },
         question::{Question, QuestionId},
     },
 };

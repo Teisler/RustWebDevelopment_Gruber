@@ -16,12 +16,12 @@ pub enum Error {
     ParseError(std::num::ParseIntError),
     MissingParameters,
     QuestionNotFound,
-    DatabaseQueryError,
+    DatabaseQueryError(SqlxError),
 }
 
 impl std::fmt::Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match *self {
+        match &*self {
             Error::ParseError(ref err) => write!(f, "Cannot parse parameter: {}", err),
             Error::MissingParameters => write!(f, "Missing parameter"),
             Error::QuestionNotFound => write!(f, "Question not found"),
@@ -29,6 +29,7 @@ impl std::fmt::Display for Error {
         }
     }
 }
+
 impl Reject for Error {}
 
 pub async fn return_error(r: Rejection) -> Result<impl Reply, Rejection> {

@@ -18,6 +18,8 @@ pub struct Pagination {
 /// `/questions?start=1&end=10`
 /// # Example usage
 /// ```rust
+/// use std::collections::HashMap;
+/// 
 /// let mut query = HashMap::new();
 /// query.insert("limit".to_string(), "1".to_string());
 /// query.insert("offset".to_string(), "10".to_string());
@@ -26,20 +28,20 @@ pub struct Pagination {
 /// assert_eq!(p.end, 10);
 /// ```
 pub fn extract_pagination(params: HashMap<String, String>) -> 
-        Result<Pagination, Error> {
+Result<Pagination, Error> {
     // Could be improved in the future
     if params.contains_key("limit") && params.contains_key("offset") {
         return Ok(Pagination {
-            // Takes the "start" parameter in the query
+            // Takes the "limit" parameter in the query
             // and tries to convert it to a number
             limit: Some(params
-                .get("limit)
+                .get("limit")
                 .unwrap()
                 .parse::<u32>()
                 .map_err(Error::ParseError)?),
             // Takes the "offset" parameter in the query
             // and tries to convert it to a number
-            end: params
+            offset: params
                 .get("offset")
                 .unwrap()
                 .parse::<u32>()

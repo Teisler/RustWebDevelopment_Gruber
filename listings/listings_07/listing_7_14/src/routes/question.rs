@@ -43,7 +43,7 @@ pub async fn get_questions(
 }
 
 pub async fn update_question(
-    id: i32,
+    id: String,
     store: Store,
     question: Question,
 ) -> Result<impl Reply, Rejection> {
@@ -55,7 +55,7 @@ pub async fn update_question(
     Ok(warp::reply::with_status("Question updated", StatusCode::OK))
 }
 
-pub async fn delete_question(id: i32, store: Store) -> Result<impl Reply, Rejection> {
+pub async fn delete_question(id: String, store: Store) -> Result<impl Reply, Rejection> {
     match store.questions.write().remove(&QuestionId(id)) {
         Some(_) => Ok(warp::reply::with_status("Question deleted", StatusCode::OK)),
         None => Err(warp::reject::custom(Error::QuestionNotFound)),

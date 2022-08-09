@@ -1,8 +1,12 @@
-use sqlx::{postgres::{PgPoolOptions, PgPool, PgRow}, Row};
+use sqlx::{
+    Error, 
+    postgres::{PgPoolOptions, PgPool, PgRow}, 
+    Row,
+};
 
 use crate::types::{
     answer::{Answer, AnswerId},
-    question::{Question, QuestionId},
+    question::{Question, QuestionId, NewQuestion},
 };
 
 #[derive(Clone, Debug)]
@@ -26,7 +30,7 @@ impl Store {
     }
 
     pub async fn get_questions(&self, limit: Option<u32>, offset: u32) ->
-        Result<Vec<Question>, sqlx::Error> {
+    Result<Vec<Question>, sqlx::Error> {
         match sqlx::query("SELECT * from questions LIMIT $1 OFFSET $2")
             .bind(limit)
             .bind(offset)
@@ -38,7 +42,7 @@ impl Store {
             })
             .fetch_all(&self.connection)
             .await {
-                OK(questions) => Ok(questions),
+                Ok(questions) => Ok(questions),
                 Err(e) => {
                     tracing::event!(tracing::Level::ERROR, "{:?}", e);
                     Err(Error::DatabaseQueryError)
@@ -46,7 +50,8 @@ impl Store {
             }
     }
     
-    pub async add_question(&self, new_question: NewQuestion) -> Result<Question, sqlx::Error> {
+    pub async fn add_question(&self, new_question: NewQuestion) -> 
+    Result<Question, sqlx::Error> {
         match sqlx::query("INSERT INTO questions (title, content, tags) VALUES ($1, $2, $3) RETURNING id, title, content, tags")
         .bind(new_question.title)
         .bind(new_question.content)
@@ -55,7 +60,7 @@ impl Store {
             id: QuestionId(row.get("id")),
             title: row.get("title"),
             content: row.get("content"),
-            tags: row.get("tags),
+            tags: row.get("tags"),
         })
         .fetch_one(&self.connection)
         .await {
