@@ -13,7 +13,11 @@ use crate::{
             extract_pagination,
             Pagination,
         },
-        question::{Question, QuestionId},
+        question::{
+            Question,
+            QuestionId,
+            NewQuestion,
+        },
     },
 };
 

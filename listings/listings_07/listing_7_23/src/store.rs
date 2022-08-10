@@ -6,7 +6,7 @@ use sqlx::{
 
 use crate::types::{
     answer::{Answer, AnswerId},
-    question::{Question, QuestionId},
+    question::{Question, QuestionId, NewQuestion,},
 };
 
 #[derive(Clone, Debug)]
@@ -45,7 +45,7 @@ impl Store {
             Ok(questions) => Ok(questions),
             Err(e) => {
                 tracing::event!(tracing::Level::ERROR, "{:?}", e);
-                Err(Error::DatabaseQueryError)
+                Err(Error::DatabaseQueryError(e))
             }
         }
     }
@@ -84,7 +84,7 @@ impl Store {
         })
         .fetch_one(&self.connection)
         .await {
-            OK(question) => Ok(question),
+            Ok(question) => Ok(question),
             Err(e) => Err(e),
         }
     }
