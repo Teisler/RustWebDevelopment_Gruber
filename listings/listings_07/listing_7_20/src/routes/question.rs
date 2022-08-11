@@ -57,10 +57,11 @@ Result<impl Reply, Rejection> {
         Err(e) => return Err(warp::reject::custom(Error::DatabaseQueryError(e))),
     };
 
-    Ok(warp::reply::with_status("Question updated", StatusCode::OK))
+    Ok(warp::reply::json(&res))
 }
 
-pub async fn delete_question(id: i32, store: Store) -> Result<impl Reply, Rejection> {
+pub async fn delete_question(id: i32, store: Store) ->
+Result<impl Reply, Rejection> {
     match store.questions.write().remove(&QuestionId(id)) {
         Some(_) => Ok(warp::reply::with_status("Question deleted", StatusCode::OK)),
         None => Err(warp::reject::custom(Error::QuestionNotFound)),

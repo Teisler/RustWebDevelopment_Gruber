@@ -57,7 +57,7 @@ Result<impl Reply, Rejection> {
         Err(e) => return Err(warp::reject::custom(Error::DatabaseQueryError(e))),
     };
 
-    Ok(warp::reply::with_status("Question updated", StatusCode::OK))
+    Ok(warp::reply::json(&res))
 }
 
 pub async fn delete_question(id: i32, store: Store) -> 

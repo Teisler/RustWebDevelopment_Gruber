@@ -1,5 +1,4 @@
 use sqlx::{
-    Error, 
     postgres::{
         PgPoolOptions,
         PgPool,
@@ -7,6 +6,8 @@ use sqlx::{
     },
     Row,
 };
+
+use handle_errors::Error;
 
 use crate::types::{
     answer::{Answer, AnswerId},
@@ -25,7 +26,7 @@ impl Store {
             .connect(db_url)
             .await {
                 Ok(pool) => pool,
-                Err(e) => panic!("Couldn't establish DB connection!"),
+                Err(_e) => panic!("Couldn't establish DB connection!"),
             };
 
         Store {

@@ -1,15 +1,14 @@
 use sqlx::{
-    Error,
-    postgres::{PgPoolOptions, PgPool, PgRow}, 
+    postgres::{PgPoolOptions, PgPool, PgRow},
     Row,
 };
+
+use handle_errors::Error;
 
 use crate::types::{
     answer::{Answer, AnswerId},
     question::{Question, QuestionId},
 };
-
-use handle_errors::Error::DatabaseQueryError;
 
 #[derive(Clone, Debug)]
 pub struct Store {
@@ -23,7 +22,7 @@ impl Store {
             .connect(db_url)
             .await {
                 Ok(pool) => pool,
-                Err(e) => panic!("Couldn't establish DB connection!"),
+                Err(_e) => panic!("Couldn't establish DB connection!"),
             };
 
         Store {
@@ -47,7 +46,7 @@ impl Store {
                 Ok(questions) => Ok(questions),
                 Err(e) => {
                     tracing::event!(tracing::Level::ERROR, "{:?}", e);
-                    Err(DatabaseQueryError(e))
+                    Err(Error::DatabaseQueryError)
                 }
             }
     }

@@ -1,8 +1,13 @@
 use sqlx::{
-    Error, 
-    postgres::{PgPoolOptions, PgPool, PgRow}, 
+    postgres::{
+        PgPoolOptions,
+        PgPool,
+        PgRow
+    },
     Row,
 };
+
+use handle_errors::Error;
 
 use crate::types::{
     answer::{Answer, AnswerId},
@@ -21,7 +26,7 @@ impl Store {
             .connect(db_url)
             .await {
                 Ok(pool) => pool,
-                Err(e) => panic!("Couldn't establish DB connection!"),
+                Err(_e) => panic!("Couldn't establish DB connection!"),
             };
 
         Store {
@@ -45,7 +50,7 @@ impl Store {
             Ok(questions) => Ok(questions),
             Err(e) => {
                 tracing::event!(tracing::Level::ERROR, "{:?}", e);
-                Err(Error::DatabaseQueryError(e))
+                Err(Error::DatabaseQueryError)
             }
         }
     }
@@ -92,11 +97,11 @@ impl Store {
     pub async fn delete_question(&self, question_id: i32) ->
     Result<bool, sqlx::Error> {
         match sqlx::query("DELETE FROM questions WHERE id = $1")
-        .bind(question_id)
-        .execute(&self.connection)
-        .await {
-            Ok(_) => Ok(true),
-            Err(e) => Err(e),
-        }
+            .bind(question_id)
+            .execute(&self.connection)
+            .await {
+                Ok(_) => Ok(true),
+                Err(e) => Err(e),
+            }
     }
 }
