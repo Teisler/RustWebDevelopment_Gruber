@@ -33,11 +33,11 @@ Result<impl Reply, Rejection> {
 #[instrument]
 pub async fn get_questions(params: HashMap<String, String>, store: Store, ) ->
 Result<impl Reply, Rejection> {
-    info!("querying questions");
+    event!("querying questions");
     let mut pagination = Pagination::default();
     
     if !params.is_empty() {
-        info!(pagination = true);
+        event!(pagination = true);
         pagination = extract_pagination(params)?;
     }
 
