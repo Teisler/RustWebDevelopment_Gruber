@@ -3,4 +3,5 @@
 **/.vscode
 **/.env
 **/.idea
-**.lock
+**/Cargo.lock
+**/*.icloud
