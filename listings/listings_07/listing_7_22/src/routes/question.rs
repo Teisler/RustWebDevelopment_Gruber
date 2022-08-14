@@ -2,7 +2,7 @@ use handle_errors::Error;
 use std::collections::HashMap;
 use warp::{http::StatusCode, Rejection, Reply};
 use tracing::{
-    info,
+    event,
     instrument,
 };
 

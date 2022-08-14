@@ -1,12 +1,8 @@
-use std::collections::HashMap;
 use warp::{http::StatusCode, Rejection, Reply};
 
 use crate::{
     store::Store,
-    types::{
-        answer::{Answer, AnswerId, NewAnswer},
-        question::QuestionId,
-    },
+    types::answer::NewAnswer,
 };
 
 pub async fn add_answer(store: Store, new_answer: NewAnswer,) -> 

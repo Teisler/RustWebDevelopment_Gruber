@@ -37,26 +37,32 @@ impl Reject for Error {}
 #[instrument]
 pub async fn return_error(r: Rejection) ->
 Result<impl Reply, Rejection> {
-    if let Some(crate::Error::DatabaseQueryError) = r.find() {
-        tracing::event!(Level::ERROR, "Database query error");
+    if let Some(Error::DatabaseQueryError) = r.find() {
+        event!(Level::ERROR, "Database query error");
         Ok(warp::reply::with_status(
-            crate::Error::DatabaseQueryError.to_string(),
+            Error::DatabaseQueryError.to_string(),
             StatusCode::UNPROCESSABLE_ENTITY,
         ))
     } else if let Some(error) = r.find::<CorsForbidden>() {
-        tracing::event!(Level::Error, "CORS forbidden error: {}", error);
+        event!(Level::ERROR, "CORS forbidden error: {}", error);
         Ok(warp::reply::with_status(
             error.to_string(),
             StatusCode::FORBIDDEN,
         ))
     } else if let Some(error) = r.find::<BodyDeserializeError>() {
-        tracing::event!(Level::ERROR, "Cannot deserizalize request body: {}", error);
+        event!(Level::ERROR, "Cannot deserizalize request body: {}", error);
+        Ok(warp::reply::with_status(
+            error.to_string(),
+            StatusCode::UNPROCESSABLE_ENTITY,
+        ))
+    } else if let Some(error) = r.find::<Error>() {
+        event!(Level::ERROR, "{}", error);
         Ok(warp::reply::with_status(
             error.to_string(),
             StatusCode::UNPROCESSABLE_ENTITY,
         ))
     } else {
-        tacing::event!(Level::WARN, "Requested route was not found");
+        event!(Level::WARN, "Requested route was not found");
         Ok(warp::reply::with_status(
             "Route not found".to_string(),
             StatusCode::NOT_FOUND,

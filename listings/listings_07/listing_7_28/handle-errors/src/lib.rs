@@ -55,8 +55,14 @@ Result<impl Reply, Rejection> {
             error.to_string(),
             StatusCode::UNPROCESSABLE_ENTITY,
         ))
+    } else if let Some(error) = r.find::<Error>() {
+        event!(Level::ERROR, "{}", error);
+        Ok(warp::reply::with_status(
+            error.to_string(),
+            StatusCode::UNPROCESSABLE_ENTITY,
+        ))
     } else {
-        tracing::event!(Level::WARN, "Requested route was not found");
+        event!(Level::WARN, "Requested route was not found");
         Ok(warp::reply::with_status(
             "Route not found".to_string(),
             StatusCode::NOT_FOUND,

@@ -1,5 +1,9 @@
 use sqlx::{
-    postgres::{PgPoolOptions, PgPool, PgRow},
+    postgres::{
+        PgPoolOptions,
+        PgPool,
+        PgRow
+    },
     Row,
 };
 
@@ -22,7 +26,7 @@ impl Store {
             .connect(db_url)
             .await {
                 Ok(pool) => pool,
-                Err(_e) => panic!("Couldn't establish DB connection!"),
+                Err(e) => panic!("Couldn't establish DB connection: {}", e),
             };
 
         Store {
