@@ -16,6 +16,9 @@ async fn main() {
     // if you need to add a username and password, the connection would look like:
     // "prostgres://username:password@localhost:5432/rustwebdev"
     let store = store::Store::new("postgres://localhost:5432/rustwebdev").await;
+
+    sqlx::migrate!().run(&store.clone().connection).await.expect("Cannot run migration");
+
     let store_filter = warp::any().map(move || store.clone());
     
     tracing_subscriber::fmt()
