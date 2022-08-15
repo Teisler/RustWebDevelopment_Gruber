@@ -1,10 +1,10 @@
 use std::collections::HashMap;
+
 use warp::{
     http::StatusCode,
     Rejection,
     Reply,
 };
-
 use tracing::{
     event,
     instrument,
