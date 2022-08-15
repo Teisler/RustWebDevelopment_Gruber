@@ -57,9 +57,7 @@ impl Store {
     
     pub async fn add_question(&self, new_question: NewQuestion) -> 
     Result<Question, sqlx::Error> {
-        match sqlx::query("INSERT INTO questions (title, content, tags) 
-        VALUES ($1, $2, $3) 
-        RETURNING id, title, content, tags")
+        match sqlx::query("INSERT INTO questions (title, content, tags) VALUES ($1, $2, $3) RETURNING id, title, content, tags")
             .bind(new_question.title)
             .bind(new_question.content)
             .bind(new_question.tags)
@@ -81,9 +79,9 @@ impl Store {
     
     pub async fn update_question(&self, question: Question, question_id: i32) -> 
     Result<Question, sqlx::Error> {
-        match sqlx::query("UPDATE questions SET title = $1, content = $2, tags = $3
-        WHERE id = $4 
-        RETURNING id, title, content, tags")
+        match sqlx::query("UPDATE questions SET title = $1, content = $2, tags = $3 
+        WHERE id = $4
+        RETURNING id, title, contents, tags")
             .bind(question.title)
             .bind(question.content)
             .bind(question.tags)

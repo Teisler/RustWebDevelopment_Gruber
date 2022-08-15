@@ -1,3 +1,4 @@
+// ch_07/src/main.rs
 #![warn(clippy::all)]
 
 use handle_errors::return_error;
@@ -19,7 +20,7 @@ async fn main() {
     let store_filter = warp::any().map(move || store.clone());
     
     tracing_subscriber::fmt()
-        // Use the filter we built above to determine which traces to record
+        // Use the filter we built above to determine which trace to record
         .with_env_filter(log_filter)
         // Record an event when each span closes.  This can be used to time our
         // routes' durations!

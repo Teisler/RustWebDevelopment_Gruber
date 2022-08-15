@@ -18,9 +18,12 @@ use crate::{
             extract_pagination,
             Pagination,
         },
-        question::{Question, NewQuestion},
+        question::{
+            Question,
+            NewQuestion
+        },
     },
-};
+  };
  
 
 #[instrument]
@@ -41,7 +44,7 @@ Result<impl Reply, Rejection> {
 }
 
 pub async fn update_question(id: i32, store: Store, question: Question,) -> 
-Result<impl warp::Reply, warp::Rejection> {
+Result<impl Reply, Rejection> {
     match store.update_question(question, id).await {
         Ok(res) => Ok(warp::reply::json(&res)),
         Err(e) => Err(warp::reject::custom(e)),

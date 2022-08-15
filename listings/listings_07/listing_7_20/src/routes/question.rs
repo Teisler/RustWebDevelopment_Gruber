@@ -21,17 +21,9 @@ use crate::{
     },
 };
 
-pub async fn add_question(store: Store, new_question: NewQuestion, ) ->
-Result<impl Reply, Rejection> {
-    if let Err(e) = store.add_question(new_question).await {
-        return Err(warp::reject::custom(Error::DatabaseQueryError(e)));
-    }
-
-    Ok(warp::reply::with_status("Question added", StatusCode::OK))
-}
 
 #[instrument]
-pub async fn get_questions(params: HashMap<String, String>, store: Store, ) ->
+pub async fn get_questions(params: HashMap<String, String>, store: Store,) ->
 Result<impl Reply, Rejection> {
     event!("querying questions");
     let mut pagination = Pagination::default();
@@ -66,4 +58,13 @@ Result<impl Reply, Rejection> {
         Some(_) => Ok(warp::reply::with_status("Question deleted", StatusCode::OK)),
         None => Err(warp::reject::custom(Error::QuestionNotFound)),
     }
+}
+
+pub async fn add_question(store: Store, new_question: NewQuestion, ) ->
+Result<impl Reply, Rejection> {
+    if let Err(e) = store.add_question(new_question).await {
+        return Err(warp::reject::custom(Error::DatabaseQueryError(e)));
+    }
+
+    Ok(warp::reply::with_status("Question added", StatusCode::OK))
 }

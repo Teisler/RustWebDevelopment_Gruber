@@ -7,8 +7,6 @@ use sqlx::{
     Row,
 };
 
-use handle_errors::Error;
-
 use crate::types::{
     answer::{Answer, AnswerId},
     question::{Question, QuestionId},

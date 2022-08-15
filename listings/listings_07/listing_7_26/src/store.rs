@@ -79,13 +79,15 @@ impl Store {
     
     pub async fn update_question(&self, question: Question, question_id: i32) -> 
     Result<Question, sqlx::Error> {
-        match sqlx::query("UPDATE questions SET title = $1, content = $2, tags = $3 where id = $4 RETURNING id, title, contents, tags")
+        match sqlx::query("UPDATE questions SET title = $1, content = $2, tags = $3 
+        WHERE id = $4
+        RETURNING id, title, contents, tags")
             .bind(question.title)
             .bind(question.content)
             .bind(question.tags)
-            .bind(question.question_id)
+            .bind(question_id)
         .map(|row: PgRow| Question {
-            id: QustionId(row.get("id")),
+            id: QuestionId(row.get("id")),
             title: row.get("title"),
             content: row.get("content"),
             tags: row.get("tags"),

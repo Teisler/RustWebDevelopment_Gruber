@@ -1,10 +1,18 @@
 use warp::{
-    filters::{body::BodyDeserializeError, cors::CorsForbidden},
+    filters::{
+        body::BodyDeserializeError,
+        cors::CorsForbidden,
+    },
     http::StatusCode,
     reject::Reject,
-    Rejection, Reply,
+    Rejection,
+    Reply,
 };
-use tracing::{event, Level, instrument};
+use tracing::{
+    event,
+    Level,
+    instrument,
+};
 
 #[derive(Debug)]
 pub enum Error {
@@ -50,7 +58,7 @@ pub async fn return_error(r: Rejection) -> Result<impl Reply, Rejection> {
         Ok(warp::reply::with_status(
             error.to_string(),
             StatusCode::UNPROCESSABLE_ENTITY,
-        )) 
+        ))
     } else {
         event!(Level::WARN, "Requested route was not found");
         Ok(warp::reply::with_status(
