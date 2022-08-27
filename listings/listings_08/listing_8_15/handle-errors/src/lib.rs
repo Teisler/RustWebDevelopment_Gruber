@@ -20,7 +20,7 @@ pub enum Error {
     ParseError(std::num::ParseIntError),
     MissingParameters,
     DatabaseQueryError,
-    ExternalAPIError(ReqwestError)
+    ExternalAPIError(ReqwestError),
 }
 
 impl std::fmt::Display for Error {
@@ -29,7 +29,7 @@ impl std::fmt::Display for Error {
             Error::ParseError(ref err) => write!(f, "Cannot parse parameter: {}", err),
             Error::MissingParameters => write!(f, "Missing parameter"),
             Error::DatabaseQueryError => write!(f, "Cannot update, invalid data."),
-            Error::ExternalAPIError(err) =>write!(f, "Cannot execute: {}", err),
+            Error::ExternalAPIError(err) => write!(f, "Cannot execute: {}", err),
         }
     }
 }

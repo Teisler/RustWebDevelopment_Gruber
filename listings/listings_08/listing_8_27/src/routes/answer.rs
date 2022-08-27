@@ -1,4 +1,3 @@
-use std::collections::HashMap;
 use warp::{http::StatusCode, Rejection, Reply};
 
 use crate::{
@@ -7,16 +6,16 @@ use crate::{
     profanity::check_profanity,
 };
 
-pub async fn add_answer(store: Store, params: HashMap<String, String>,) ->
+pub async fn add_answer(store: Store, new_answer: NewAnswer) ->
 Result<impl Reply, Rejection> {
-    let content = match check_profanity(params.get("content").unwrap().to_string()).await {
+    let content = match check_profanity(new_answer.content).await {
         Ok(res) => res,
         Err(e) => return Err(warp::reject::custom(e)),
     };
 
     let answer = NewAnswer {
         content,
-        question_id: params.get("questionId").unwrap().parse().unwrap(),
+        question_id: new_answer.question_id,
     };
 
     match store.add_answer(answer).await {

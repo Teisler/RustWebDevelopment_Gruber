@@ -1,4 +1,7 @@
-use serde_json::json;
+// Needed to add the following declaration
+use serde::{Deserialize, Serialize};
+// Removed following unneeded declaration
+// use serde_json::json;
 use reqwest_middleware::ClientBuilder;
 use reqwest_retry::{RetryTransientMiddleware, policies::ExponentialBackoff};
 

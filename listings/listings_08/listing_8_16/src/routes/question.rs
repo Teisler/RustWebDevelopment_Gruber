@@ -115,21 +115,16 @@ Result<impl Reply, Rejection> {
         .await
         .map_err(|e| handle_errors::Error::ExternalAPIError(e))?;
 
+    let content = res.censored_content;
+
     let question = NewQuestion {
         title: new_question.title,
-        content: res.censored_content,
+        content,
         tags: new_question.tags
     };
 
     match store.add_question(question).await {
         Ok(question) => Ok(warp::reply::json(&question)),
         Err(e) => Err(warp::reject::custom(e)),
-    }
-}
-
-async fn transform_error(res: reqwest::Response) -> handle_errors::APILayerError {
-    handle_errors::APILayerError {
-        status: res.status().as_u16(),
-        message: res.json::<APIResponse>().await.unwrap().message,
     }
 }

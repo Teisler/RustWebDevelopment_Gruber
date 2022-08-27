@@ -104,10 +104,10 @@ Result<impl Reply, Rejection> {
     if !res.status().is_success() {
         return if res.status().is_client_error() {
             let err = transform_error(res).await;
-            Err(handle_errors::Error::ClientError(err))
+            Err(warp::reject::custom(handle_errors::Error::ClientError(err)))
         } else {
             let err = transform_error(res).await;
-            Err(handle_errors::Error::ServerError(err))
+            Err(warp::reject::custom(handle_errors::Error::ServerError(err)))
         }
     }
 
@@ -115,9 +115,11 @@ Result<impl Reply, Rejection> {
         .await
         .map_err(|e| handle_errors::Error::ExternalAPIError(e))?;
 
+    let content = res.censored_content;
+
     let question = NewQuestion {
         title: new_question.title,
-        content: res.censored_content,
+        content,
         tags: new_question.tags
     };
 

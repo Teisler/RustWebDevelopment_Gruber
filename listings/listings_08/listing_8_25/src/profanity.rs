@@ -4,7 +4,6 @@ use reqwest_retry::{
     RetryTransientMiddleware,
     policies::ExponentialBackoff
 };
-use reqwest-retry = "0.1.5"
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct APIResponse {
@@ -37,12 +36,12 @@ Result<String, handle_errors::Error> {
         .build();
 
     let res = client
-        .post("https://api.apilayer.com/bad_words?censor_characters=*")
+        .post("https://api.apilayer.com/bad_words?censor_character=*")
         .header("apikey", "API_KEY")
         .body(content)
         .send()
         .await
-        .map_err(|e| handle_errors::Error::MiddlewareRequestAPIError(e))?;
+        .map_err(|e| handle_errors::Error::MiddlewareReqwestAPIError(e))?;
 
     if !res.status().is_success() {
         return if res.status().is_client_error() {

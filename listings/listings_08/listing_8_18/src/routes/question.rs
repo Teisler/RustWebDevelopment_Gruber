@@ -115,9 +115,11 @@ Result<impl Reply, Rejection> {
         .await
         .map_err(|e| handle_errors::Error::ExternalAPIError(e))?;
 
+    let content = res.censored_content;
+
     let question = NewQuestion {
         title: new_question.title,
-        content: res.censored_content,
+        content,
         tags: new_question.tags
     };
 

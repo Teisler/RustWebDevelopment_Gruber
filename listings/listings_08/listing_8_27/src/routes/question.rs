@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+use serde::{Deserialize, Serialize};
+
 use warp::{
     http::StatusCode,
     Rejection,
@@ -10,11 +12,6 @@ use tracing::{
     event,
     instrument,
     Level,
-};
-
-use serde::{
-    Deserialize,
-    Serialize,
 };
 
 use crate::{
@@ -52,10 +49,10 @@ Result<impl Reply, Rejection> {
 
 pub async fn update_question(id: i32, store: Store, question: Question,) ->
 Result<impl Reply, Rejection> {
-    let title = tokio::spawn(check_profanity(question.title));
-    let content = tokio::spawn(check_profanity(question.content));
+    let title = check_profanity(question.title);
+    let content = check_profanity(question.content);
 
-    let (title, content) = (title.await.unwrap(), content.await.unwrap());
+    let (title, content) = tokio::join!(title, content);
 
     if title.is_err() {
         return Err(warp::reject::custom(title.unwrap_err()));

@@ -43,7 +43,7 @@ impl std::fmt::Display for Error {
             Error::ParseError(ref err) => write!(f, "Cannot parse parameter: {}", err),
             Error::MissingParameters => write!(f, "Missing parameter"),
             Error::DatabaseQueryError => write!(f, "Cannot update, invalid data."),
-            Error::ExternalAPIError(err) =>write!(f, "Cannot execute: {}", err),
+            Error::ExternalAPIError(err) => write!(f, "Cannot execute: {}", err),
             Error::ClientError(err) => write!(f, "External Client error {}", err),
             Error::ServerError(err) => write!(f, "External Server error {}", err),
         }
